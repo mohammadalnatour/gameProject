@@ -1,0 +1,377 @@
+/**
+ * AngularJS Starter Pack
+ * @version v0.2.4-dev-2016-10-22
+ * @link 
+ */
+
+'use strict';
+
+angular.module('eklabs.angularStarterPack.jsonEditor',[
+    'ui.ace'
+]);
+'use strict';
+
+angular.module('eklabs.angularStarterPack.jsonEditor')
+    .directive('demoJsonEditor', ['$log',function($log){
+        return {
+            templateUrl : 'eklabs.angularStarterPack/modules/json-editor/directives/editor/view.html',
+            scope : {
+                json        : '=?',
+                callback    : '=?',
+                options     : '=?',
+                listeners   : '=?',
+                height      : '=?'
+            },link : function(scope){
+
+                // -------------------------------------------------------------------------------------------------
+                // --- OPTIONS
+                // -------------------------------------------------------------------------------------------------
+                scope.$watch('options', function(options){
+                    // TODO - NO OPTIONS YET
+                });
+
+                // -------------------------------------------------------------------------------------------------
+                // --- CALLBACK
+                // -------------------------------------------------------------------------------------------------
+                /**
+                 * Default action of our directive
+                 * @type {{valid: default_actions.valid}}
+                 */
+                var default_actions = {
+                    valid : function(json){
+                        $log.info('Valid JSON on demoJsonEditor directive',json);
+                    }
+                };
+                /**
+                 * Check if callback in params
+                 */
+                scope.$watch('callback', function(callback){
+                    if(callback){
+                        scope.actions = angular.extend({},default_actions,callback);
+                    }else{
+                        scope.actions = default_actions
+                    }
+                });
+
+                // -------------------------------------------------------------------------------------------------
+                // --- LISTENERS
+                // -------------------------------------------------------------------------------------------------
+                /**
+                 * Default listeners for the directive
+                 * @type {{onErrors: default_listeners.onErrors}}
+                 */
+                var default_listeners = {
+                    onError : function(editorError){
+                        //$log.error(editorError);
+                    }
+                };
+
+                /**
+                 * Check if a listener as params
+                 */
+                scope.$watch('listeners', function(listeners){
+                    if(listeners){
+                        scope.listener = angular.extend({},default_listeners,listeners);
+                    }else{
+                        scope.listener = default_listeners;
+                    }
+                });
+
+                /**
+                 * Errors
+                 * Catch Error and send back
+                 */
+                scope.$watch('editorError', function(errors){
+                    if(errors){
+                        scope.listener.onError(errors);
+                    }
+                });
+
+                // -------------------------------------------------------------------------------------------------
+                // --- JSON
+                // -------------------------------------------------------------------------------------------------
+                scope.$watch('json', function(json){
+                    scope.aceAvailable = false;
+
+                    if(!json){
+                        // --- Default json
+                        scope.aceModel =  '{\n\t\n}';
+                    }else{
+                        scope.aceModel = scope.convertRequestParamsToJson(json);
+                    }
+                    scope.loadAce = moment().valueOf();
+                });
+
+                // -------------------------------------------------------------------------------------------------
+                // --- JSON EDITOR
+                // -------------------------------------------------------------------------------------------------
+                /**
+                 * Trigger to load ace editor
+                 */
+                scope.$watch('loadAce',function(loadAce){
+                    scope.aceOption = {
+                        mode: 'json',
+                        require: ['ace/ext/language_tools'],
+                        theme: 'chrome',
+                        onLoad: function (_ace) {
+                            var _session = _ace.getSession();
+
+                            _session.on('changeAnnotation', function(){
+
+                                var annot = _ace.getSession().getAnnotations();
+
+                                if(!annot.length){
+                                    scope.editorError = false;
+                                    // --- transform and send to temp variable
+                                    scope.currentJson = scope.convertToJson(_ace.getValue());
+                                }else{
+                                    // ---- Error on the model
+                                    scope.editorError = annot[0];
+                                }
+                            } )
+                        }
+                    };
+                    scope.aceAvailable = true;
+                });
+
+                /**
+                 * Transforms params request attribute as valid json ;)
+                 * @param params
+                 * @returns {string}
+                 */
+                scope.convertRequestParamsToJson = function(params){
+
+                    if(Array.isArray(params)){
+                        var myJson = {};
+
+                        angular.forEach(params, function(element){
+                            myJson[element.key] = element.value;
+                        });
+
+                        return scope.convertToAce(myJson);
+
+                    }else{
+                        return scope.convertToAce(params);
+                    }
+                };
+                /**
+                 * Build params for functionality from ace
+                 * @param json
+                 */
+                scope.convertAceToParams    = function(json,parent){
+
+                    var myParams = [];
+
+                    angular.forEach(json, function(value,key){
+                        if(value instanceof Object){
+                            myParams = myParams.concat(scope.convertAceToParams(value),parent+'.'+key);
+                        }else{
+                            myParams.push({
+                                key :  (parent) ? parent+key : key,
+                                value : value
+                            })
+                        }
+                    });
+
+                    return myParams;
+
+                };
+
+
+                /**
+                 * Method to render well or params
+                 * @param json
+                 * @returns {string}
+                 */
+                scope.convertToAce = function(json){
+
+                    var transform       = "",
+                        previousChar    = "",
+                        tabs            = [],
+                        jsonString      = JSON.stringify(json);
+
+                    angular.forEach(jsonString, function(char){
+                        if(char == '{'){
+                            tabs.push("\t");
+                            transform += char + '\n'+tabs.join("");
+                        }else if(char == ',' && (previousChar == '"'|| previousChar == 'e' || previousChar == 'd')){
+                            transform += char + '\n'+tabs.join("");
+                        }else if(char == '}'){
+                            tabs.splice(0,1);
+                            transform += '\n' +tabs.join("")+ char;
+                        }else{
+                            transform += char
+                        }
+                        previousChar = char;
+                    });
+
+                    return transform;
+                };
+
+                /**
+                 * Little method to transform edited
+                 * @param value
+                 * @returns {*}
+                 */
+                scope.convertToJson = function(value){
+                    if(!value){
+                        return undefined
+                    }else if(value instanceof Object){
+                        return value;
+                    }else{
+                        return JSON.parse(value);
+                    }
+                };
+
+                // -------------------------------------------------------------------------------------------------
+                //                                                                                               CSS
+                // -------------------------------------------------------------------------------------------------
+                scope.$watch('height', function(height){
+                    scope.currentHeight        = (height-20) || 800;
+                    scope.maxHeightContainer    = height - 45;
+                });
+                //scope.aceMaxHeight = 260; //todo
+                
+                
+            }
+        }
+    }]);
+'use strict';
+
+angular.module('eklabs.angularStarterPack.forms',[
+    
+]);
+'use strict';
+
+angular.module('eklabs.angularStarterPack.forms')
+    .directive('myForm',function($log){
+        return {
+            templateUrl : 'eklabs.angularStarterPack/modules/forms/directives/my-form/myFormView.html',
+            scope : {
+                user        : '=',
+                callback    : '=?'
+            },link : function(scope){
+
+                /**
+                 * 
+                 */
+                scope.$watch('user', function(myUser){
+                    scope.myUser = myUser;
+                });
+
+
+                /**
+                 * Default Actions
+                 * @type {{onValid: default_actions.onValid}}
+                 */
+                var default_actions = {
+                  onValid : function(user){
+                      $log.info('my user is : ',user)
+                    }
+                };
+
+                /**
+                 * Catch Callback
+                 */
+                scope.$watch('callback', function(callback){
+                    if(callback instanceof Object){
+                        scope.actions = angular.extend({},default_actions,callback);
+                    }else{
+                        scope.actions = default_actions;
+                    }
+                });
+
+            }
+        }
+    });
+'use strict';
+
+angular.module('eklabs.angularStarterPack.user',[]);
+'use strict';
+
+angular.module('eklabs.angularStarterPack.user')
+    .directive('myUser',function($log){
+        return {
+            templateUrl : 'eklabs.angularStarterPack/modules/user/directives/my-user/view.html',
+            scope : {
+                user : '=?',
+                callback : '=?'
+            },link : function(scope){
+
+
+                /**
+                 *
+                 */
+                scope.$watch('callback',function(callback){
+                    $log.info('Check callback',callback);
+
+                    if(callback && callback.valid){
+                        scope.isEditable = true;
+                    }else{
+                        scope.isEditable = false;
+                    }
+                });
+
+                scope.$watch('user',function(user){
+                    $log.info('test user change',user);
+                    if(user){
+                        scope.user.birthDate = new Date(user.birthDate);
+                    }else{
+                        scope.user = undefined;
+                    }
+
+                });
+
+                /**
+                 *
+                 */
+                scope.isModeEdition = false;
+                scope.goToEdition = function(){
+                    scope.isModeEdition = !scope.isModeEdition;
+                    scope.userEdit = angular.extend({},scope.user);
+                };
+
+                /**
+                 *
+                 */
+                scope.valid = function(user){
+                    scope.isModeEdition = !scope.isModeEdition;
+                    scope.user = angular.extend({},scope.userEdit);
+                    scope.callback.valid(user);
+                }
+
+
+            }
+        }
+    })
+'use strict';
+
+angular.module('eklabs.angularStarterPack',[
+    'eklabs.angularStarterPack.jsonEditor',
+    'eklabs.angularStarterPack.forms',
+    'eklabs.angularStarterPack.user'
+]);
+'use strict';
+
+angular.module('eklabs.angularStarterPack')
+    .factory('$config', ['WEBAPP_CONFIG',function(WEBAPP_CONFIG){
+
+        var parameters = angular.extend({}, WEBAPP_CONFIG);
+
+        return {
+            get: function (name) {
+                return parameters[name];
+            }
+        }
+    }]);
+'use strict';
+
+angular.module('eklabs.angularStarterPack')
+    .filter('momentFormat', function() {
+
+        return function (value, format) {
+            var date = new Date(value);
+            return moment(date).isValid() ? moment(date).format(format) : value;
+        };
+
+    });
