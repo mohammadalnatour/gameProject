@@ -1,15 +1,16 @@
 # eklabs.angularStarterPack 0.2.4
 
-Starter pack to get basic on angular component development 
+Starter pack Basic sur angular 
 
-## How to start
 
 ### How to start
-1. Open terminal, go to angularStarterPack folder
-1. npm install  
-2. bower install
-3. copy demo/config.dist.js to demo/config.js and add references if you need
-3. grunt dev
+1. Open terminal, go to your folder
+1. sudo npm install  
+2. sudo npm install -g bower install
+3. sudo bower install --allow-root or sudo bower install
+4. copy demo/config.dist.js to demo/config.js and add references if you need
+5. Insert folder bower_components in demo/
+5. grunt dev or grunt dev --force
 
 ### How to build page
 1. add page description on demo/data/pages.json
@@ -36,7 +37,6 @@ Starter pack to get basic on angular component development
   "subPages"    " [Page]
 }
 ```
-
 
 
 
