@@ -11,6 +11,9 @@ modelFiles = {
         'src/modules/user/module.js',
         'src/modules/user/{,**/}*.js',
 
+        'src/modules/form-project/module.js',
+        'src/modules/form-project/{,**/}*.js',
+
         'src/module.js',
         'src/services/{,**/}*.js'
 

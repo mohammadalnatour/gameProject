@@ -1,6 +1,70 @@
 angular.module('eklabs.angularStarterPack').run(['$templateCache', function($templateCache) {
   'use strict';
 
+  $templateCache.put('eklabs.angularStarterPack/modules/form-project/directives/project/view.html',
+    "<form>\n" +
+    "\n" +
+    "    <!-- FORM CONTENT -->\n" +
+    "    <div flex\n" +
+    "         layout     =   \"column\"\n" +
+    "         style      =   \"overflow-y:auto;overflow-x: hidden;\"\n" +
+    "         ng-style   =   \"{'min-height' : maxHeightContainer , 'max-height' : maxHeightContainer}\">\n" +
+    "\n" +
+    "        <div layout=\"column\" flex>\n" +
+    "\n" +
+    "            <h2 class=\"title\">Formulaire d'ajout et de modification </h2>\n" +
+    "\n" +
+    "\n" +
+    "        </div>\n" +
+    "\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <!-- BOUTON ACTIONS -->\n" +
+    "    <div layout=\"row\" layout-align=\"start center\" class=\"shadow_up\" >\n" +
+    "\n" +
+    "        <div layout=\"column\" >\n" +
+    "            <md-input-container >\n" +
+    "                <label>Nom du jeu</label>\n" +
+    "                <input name=\"name\" ng-model=\"myProject.name\" />\n" +
+    "            </md-input-container>\n" +
+    "\n" +
+    "            <md-input-container >\n" +
+    "                <label>Genre</label>\n" +
+    "                <input name=\"name\" ng-model=\"myProject.gender\" />\n" +
+    "            </md-input-container>\n" +
+    "\n" +
+    "            <md-input-container >\n" +
+    "                <label>Description</label>\n" +
+    "                <input name=\"name\" type=\"text-area\" ng-model=\"myProject.description\" />\n" +
+    "            </md-input-container>\n" +
+    "\n" +
+    "            <label style=\"color: #9e9e9e;\">\n" +
+    "                Photo\n" +
+    "            </label>\n" +
+    "            <md-input-container >\n" +
+    "\n" +
+    "                <input name=\"name\" type=\"file\" ng-model=\"myProject.picture\" />\n" +
+    "            </md-input-container>\n" +
+    "\n" +
+    "\n" +
+    "        </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div layout=\"row\">\n" +
+    "        <md-button class=\"md-primary\" type=\"submit\" aria-label=\"test\" >\n" +
+    "            <md-icon md-svg-src=\"material-design:done\"></md-icon>\n" +
+    "            <span style=\"font-weight:200\">Valider</span>\n" +
+    "        </md-button>\n" +
+    "    </div>\n" +
+    "</form>"
+  );
+
+
   $templateCache.put('eklabs.angularStarterPack/modules/forms/directives/my-form/myFormView.html',
     "<form name=\"myForm\" ng-submit=\"actions.onValid(myUser)\">\n" +
     "\n" +

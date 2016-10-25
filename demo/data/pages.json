@@ -15,5 +15,11 @@
     "description" : "Example how to use a directive",
     "icon"        : "bookmark_border",
     "state"       : "myForm2"
+  },
+  {
+    "name"        : "Creer et modifier un projet de jeu" ,
+    "description" : "Permet de creer et modifier un projet de jeu",
+    "icon"        : "bookmark_border",
+    "state"       : "addUpdateProject"
   }
 ]

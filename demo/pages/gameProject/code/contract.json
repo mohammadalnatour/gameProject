@@ -1,0 +1,7 @@
+{
+  "project" : "Resource User",
+
+  "callback"   : {
+    "onValid" : "function(project){}"
+  }
+}

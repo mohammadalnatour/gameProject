@@ -33,6 +33,11 @@ angular.module('demoApp')
             controller : 'demoUserCtrl',
             templateUrl : "pages/demoUser/demoUserView.html"
         })
+        .state('addUpdateProject', {
+            url : '/add-update-project',
+            controller : 'gameProjectCtrl',
+            templateUrl : "pages/gameProject/gameProjectForm.html"
+        })
 
 
     ;

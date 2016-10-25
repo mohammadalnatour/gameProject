@@ -1,0 +1,60 @@
+<form>
+
+    <!-- FORM CONTENT -->
+    <div flex
+         layout     =   "column"
+         style      =   "overflow-y:auto;overflow-x: hidden;"
+         ng-style   =   "{'min-height' : maxHeightContainer , 'max-height' : maxHeightContainer}">
+
+        <div layout="column" flex>
+
+            <h2 class="title">Formulaire d'ajout et de modification </h2>
+
+
+        </div>
+
+    </div>
+
+    <!-- BOUTON ACTIONS -->
+    <div layout="row" layout-align="start center" class="shadow_up" >
+
+        <div layout="column" >
+            <md-input-container >
+                <label>Nom du jeu</label>
+                <input name="name" ng-model="myProject.name" />
+            </md-input-container>
+
+            <md-input-container >
+                <label>Genre</label>
+                <input name="name" ng-model="myProject.gender" />
+            </md-input-container>
+
+            <md-input-container >
+                <label>Description</label>
+                <input name="name" type="text-area" ng-model="myProject.description" />
+            </md-input-container>
+
+            <label style="color: #9e9e9e;">
+                Photo
+            </label>
+            <md-input-container >
+
+                <input name="name" type="file" ng-model="myProject.picture" />
+            </md-input-container>
+
+
+        </div>
+
+
+
+
+
+    </div>
+
+    <div layout="row">
+        <md-button class="md-primary" type="submit" aria-label="test" >
+            <md-icon md-svg-src="material-design:done"></md-icon>
+            <span style="font-weight:200">Valider</span>
+        </md-button>
+    </div>
+</form>
