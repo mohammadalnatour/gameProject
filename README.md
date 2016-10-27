@@ -1,6 +1,6 @@
 # eklabs.angularStarterPack 0.2.4
 
-Starter pack Basic sur angular 
+Branch Mohammad
 
 
 ### How to start
